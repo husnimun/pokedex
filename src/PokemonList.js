@@ -8,6 +8,9 @@ import PokemonDetail from './PokemonDetail'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Observer from '@researchgate/react-intersection-observer'
 import pokedexClient from './api/pokedexClient'
+import TextField from '@material-ui/core/TextField'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
 
 const styles = theme => ({
   root: {
@@ -18,7 +21,7 @@ const styles = theme => ({
   },
   gridList: {
     width: 972,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   gridListTile: {
     height: '400px !important',
@@ -30,6 +33,10 @@ const styles = theme => ({
   center: {
     textAlign: 'center',
   },
+  typeFilter: {
+    width: 972,
+    margin: '24px auto',
+  },
 })
 
 class PokemonList extends React.Component {
@@ -39,6 +46,7 @@ class PokemonList extends React.Component {
     pokemon: {},
     pokemons: [],
     isLoading: false,
+    types: '',
   }
 
   openPokemonDetail = pokemon => {
@@ -53,6 +61,10 @@ class PokemonList extends React.Component {
       await this.loadPokemon()
       this.setState({ isLoading: false })
     }
+  }
+
+  handleTypesFilter = e => {
+    this.setState({ types: e.target.value })
   }
 
   loadPokemon = async () => {
@@ -75,6 +87,17 @@ class PokemonList extends React.Component {
     this.setState({ pokemons, first: first + 30 })
   }
 
+  filterPokemonByTypes = () => {
+    const { pokemons, types } = this.state
+    if (!types) return pokemons
+    let filteredPokemons = pokemons.filter(pokemon => {
+      return pokemon.types
+        .map(type => type.toLowerCase())
+        .includes(types.toLowerCase())
+    })
+    return filteredPokemons
+  }
+
   renderLoader = () => {
     const { isLoading } = this.state
     const { classes } = this.props
@@ -82,10 +105,22 @@ class PokemonList extends React.Component {
   }
 
   render() {
-    const { open, pokemon, pokemons } = this.state
+    const { open, pokemon } = this.state
     const { classes } = this.props
     return (
       <div>
+        <Card className={classes.typeFilter}>
+          <CardContent>
+            <TextField
+              id="pokemon-types-filter"
+              label="Filter pokemon by types"
+              value={this.state.types}
+              onChange={this.handleTypesFilter}
+              helperText="Filter pokemon by types, separated by coma"
+              margin="normal"
+            />
+          </CardContent>
+        </Card>
         <div className={classes.root}>
           <PokemonDetail
             open={open}
@@ -95,7 +130,7 @@ class PokemonList extends React.Component {
             }}
           />
           <GridList className={classes.gridList} cols={3}>
-            {pokemons.map(pokemon => (
+            {this.filterPokemonByTypes().map(pokemon => (
               <GridListTile key={pokemon.id} className={classes.gridListTile}>
                 <PokemonCard
                   pokemon={pokemon}

@@ -15,7 +15,7 @@ const styles = {
   },
 }
 
-class SimpleDialog extends React.Component {
+class PokemonDetail extends React.Component {
   handleClose = () => {
     this.props.onClose()
   }
@@ -85,10 +85,10 @@ class SimpleDialog extends React.Component {
   }
 }
 
-SimpleDialog.propTypes = {
+PokemonDetail.propTypes = {
   classes: PropTypes.object.isRequired,
   onClose: PropTypes.func,
   selectedValue: PropTypes.string,
 }
 
-export default withStyles(styles)(SimpleDialog)
+export default withStyles(styles)(PokemonDetail)

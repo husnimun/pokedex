@@ -20,7 +20,7 @@ const styles = theme => ({
     justifyContent: 'space-around',
   },
   gridList: {
-    width: 972,
+    width: 936,
     justifyContent: 'space-between',
   },
   gridListTile: {
@@ -34,7 +34,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   typeFilter: {
-    width: 972,
+    width: 936,
     margin: '24px auto',
   },
 })
@@ -80,6 +80,19 @@ class PokemonList extends React.Component {
             number
             image
             types
+            classification
+            resistant
+            weaknesses
+            fleeRate
+            maxHP
+            weight {
+              minimum
+              maximum
+            }
+            height {
+              minimum
+              maximum
+            }
           }
         }
       `,
@@ -90,10 +103,11 @@ class PokemonList extends React.Component {
   filterPokemonByTypes = () => {
     const { pokemons, types } = this.state
     if (!types) return pokemons
+    let typesArr = types.split(',').map(type => type.trim())
     let filteredPokemons = pokemons.filter(pokemon => {
       return pokemon.types
         .map(type => type.toLowerCase())
-        .includes(types.toLowerCase())
+        .some(type => typesArr.includes(type))
     })
     return filteredPokemons
   }

@@ -7,7 +7,9 @@ import client from './api/pokedexClient'
 function App() {
   return (
     <ApolloProvider client={client}>
-      <PokemonList />
+      <div className="App">
+        <PokemonList />
+      </div>
     </ApolloProvider>
   )
 }
